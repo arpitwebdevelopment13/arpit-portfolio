@@ -1,548 +1,367 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motivational Gym - Fitness Center</title>
+    <title>Indori Chaska - Premium</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        /* --- GLOBAL STYLES --- */
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f8f9fa; text-align: center; color: #333; scroll-behavior: smooth; }
+        
+        /* 📌 FIXED NAVBAR */
+        .navbar { background: #ff4757; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar button { background: rgba(255, 255, 255, 0.2); border: none; color: white; font-weight: bold; font-size: 14px; cursor: pointer; padding: 8px 16px; border-radius: 20px; transition: 0.2s; }
+        .navbar button:active { background: rgba(255,255,255,0.4); }
+        
+        /* 📄 PAGE ROUTING */
+        .page { display: none; padding: 0; max-width: 500px; margin: auto; background: white; min-height: 100vh; box-sizing: border-box; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        .active-page { display: block; }
+        .section-padding { padding: 35px 20px; }
+        h2 { color: #ff4757; font-size: 24px; margin-top: 0; margin-bottom: 5px; }
+        .sub-text { color: #666; font-size: 14px; margin-bottom: 25px; display: block; }
 
-        /* Color Themes */
-        :root {
-            --primary-color: #ff6b35;
-            --secondary-color: #1a1a2e;
-            --text-light: #ffffff;
-            --text-dark: #333333;
-        }
+        /* --- HOME PAGE STYLES --- */
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=500&q=80'); background-size: cover; padding: 60px 20px; color: white; }
+        .btn-main { background: #ff4757; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(255,71,87,0.3); }
+        .coupon { background: #fff3cd; border: 2px dashed #ffc107; padding: 15px; border-radius: 10px; margin: 20px; font-size: 14px; }
+        
+        /* 🆕 Slider For Specials */
+        .featured-container { display: flex; overflow-x: auto; gap: 15px; padding: 5px 20px 15px 20px; scrollbar-width: none; }
+        .featured-container::-webkit-scrollbar { display: none; }
+        .featured-card { min-width: 150px; background: white; border-radius: 12px; padding: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: left; border: 1px solid #eee; }
+        .featured-card img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; }
+        .featured-card h4 { margin: 8px 0 4px 0; font-size: 14px; }
+        .featured-card span { color: #ff4757; font-weight: bold; font-size: 14px; }
 
-        .theme-orange {
-            --primary-color: #ff6b35;
-        }
-        .theme-blue {
-            --primary-color: #00d4ff;
-        }
-        .theme-green {
-            --primary-color: #00ff88;
-        }
+        /* 🆕 Grid Features */
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 20px; }
+        .feature-box { background: #fff5f6; padding: 15px 5px; border-radius: 10px; border: 1px solid #ffe2e4; }
+        .feature-box span { font-size: 24px; display: block; margin-bottom: 5px; }
+        .feature-box h4 { margin: 0; font-size: 12px; color: #2f3542; }
 
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-            color: var(--text-light);
-        }
+        /* 🆕 Middle Visual Banner */
+        .mid-banner { background: linear-gradient(rgba(255, 71, 87, 0.95), rgba(255, 71, 87, 0.95)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=500&q=80'); padding: 40px 20px; color: white; margin-top: 20px; background-size: cover; }
 
-        /* Header */
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
+        /* 🆕 FAQs */
+        .faq-box { text-align: left; padding: 0 20px; }
+        .faq-item { background: #f1f2f6; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+        .faq-item strong { display: block; margin-bottom: 4px; color: #2f3542; font-size: 14px; }
+        .faq-item p { margin: 0; font-size: 13px; color: #57606f; }
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-transform: uppercase;
-        }
+        /* --- MENU PAGE STYLES --- */
+        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 25px; border: 1px solid #ddd; font-size: 16px; box-sizing: border-box; outline: none; }
+        .filter-btn { background: #28a745; color: white; border: none; padding: 10px; border-radius: 25px; cursor: pointer; margin-bottom: 15px; font-weight: bold; width: 100%; }
+        .menu-item { background: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #eee; }
+        .btn-add { background: #ff4757; color: white; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        
+        /* 🛒 Fixed Sticky Bottom Cart Bar */
+        .cart-box { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: #fff; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); box-sizing: border-box; z-index: 999; }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
+        /* --- CHECKOUT & CONTACT STYLES --- */
+        .form-group { margin: 15px 20px; text-align: left; }
+        label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .btn-location { background: #007bff; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; font-weight: bold; }
+        .btn-whatsapp { background: #25D366; color: white; border: none; padding: 15px; width: 90%; font-size: 18px; border-radius: 30px; font-weight: bold; cursor: pointer; margin: 15px 0; box-shadow: 0 4px 10px rgba(37,211,102,0.3); }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin: 20px; border: 1px solid #eee; }
+        .btn-call { background: #ff4757; color: white; padding: 12px; width: 100%; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; text-decoration: none; display: inline-block; box-sizing: border-box; }
 
-        nav a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--primary-color);
-        }
-
-        /* Theme Buttons */
-        .theme-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .theme-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid white;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .btn-orange { background: #ff6b35; }
-        .btn-blue { background: #00d4ff; }
-        .btn-green { background: #00ff88; }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 100px 20px;
-            background: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920') no-repeat center/cover;
-            position: relative;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 60px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-
-        .hero h1 span {
-            color: var(--primary-color);
-        }
-
-        .hero p {
-            font-size: 24px;
-            margin-bottom: 30px;
-        }
-
-        .cta-button {
-            padding: 15px 40px;
-            font-size: 18px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 80px 5%;
-            background: #1a1a2e;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 40px;
-            margin-bottom: 50px;
-            color: var(--primary-color);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .feature-card i {
-            font-size: 50px;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        /* Pricing Section */
-        .pricing {
-            padding: 80px 5%;
-            background: #0f0f23;
-        }
-
-        .pricing-card {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            padding: 50px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            margin: 0 auto;
-            border: 3px solid var(--primary-color);
-        }
-
-        .price {
-            font-size: 60px;
-            color: var(--primary-color);
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .price span {
-            font-size: 20px;
-        }
-
-        .pricing-card ul {
-            list-style: none;
-            margin: 30px 0;
-            text-align: left;
-        }
-
-        .pricing-card li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .pricing-card li::before {
-            content: '✓';
-            color: var(--primary-color);
-            margin-right: 10px;
-        }
-
-        /* Gallery Section */
-        .gallery {
-            padding: 80px 5%;
-            background: #1a1a2e;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-img {
-            height: 300px;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .gallery-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .gallery-img:hover img {
-            transform: scale(1.1);
-        }
-
-        /* Contact Section */
-        .contact {
-            padding: 80px 5%;
-            background: #0f0f23;
-            text-align: center;
-        }
-
-        .contact-info {
-            margin-bottom: 30px;
-        }
-
-        .contact-info p {
-            font-size: 20px;
-            margin: 15px 0;
-        }
-
-        /* Floating Buttons */
-        .floating-buttons {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 1000;
-        }
-
-        .whatsapp-btn, .call-btn {
-            padding: 15px 25px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.3s;
-            text-decoration: none;
-        }
-
-        .whatsapp-btn {
-            background: #25D366;
-            color: white;
-        }
-
-        .call-btn {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .whatsapp-btn:hover, .call-btn:hover {
-            transform: scale(1.1);
-        }
-
-        /* Footer */
-        footer {
-            background: #0a0a1a;
-            padding: 30px 5%;
-            text-align: center;
-        }
-
-        footer p {
-            opacity: 0.7;
-        }
-
-        /* Mobile Menu */
-        .menu-toggle {
-            display: none;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
-            }
-
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                flex-direction: column;
-                padding: 20px;
-                text-align: center;
-            }
-
-            nav ul.active {
-                display: flex;
-            }
-
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .floating-buttons {
-                bottom: 20px;
-                right: 20px;
-            }
-
-            .whatsapp-btn, .call-btn {
-                padding: 12px 20px;
-                font-size: 14px;
-            }
-        }
+        /* 🆕 PREMIUM FOOTER */
+        footer { background: #2f3542; color: #a4b0be; padding: 25px 20px; font-size: 13px; margin-top: 20px; }
+        footer h3 { color: white; margin-top: 0; margin-bottom: 5px; }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="theme-orange">
-    <!-- Header -->
-    <header>
-        <div class="logo">Motivational<span style="color:var(--primary-color)">Gym</span></div>
-        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-        <nav>
-            <ul id="navMenu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Facilities</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="theme-buttons">
-            <div class="theme-btn btn-orange" onclick="changeTheme('theme-orange')"></div>
-            <div class="theme-btn btn-blue" onclick="changeTheme('theme-blue')"></div>
-            <div class="theme-btn btn-green" onclick="changeTheme('theme-green')"></div>
-        </div>
-    </header>
+<body>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Welcome to <span>Motivational</span> Gym</h1>
-            <p>Fit Raho, Strong Raho, Mukkable Raho!</p>
-            <a href="#pricing" class="cta-button">Join Now - ₹500/month</a>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title">Our Facilities</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fas fa-dumbbell"></i>
-                <h3>Modern Equipment</h3>
-                <p>Latest gym machines and free weights for all muscle groups</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-cycling"></i>
-                <h3>Cardio Zone</h3>
-                <p>Treadmills, cycles, and cross trainers for cardio fitness</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-user-tie"></i>
-                <h3>Personal Trainer</h3>
-                <p>Expert trainers to guide you in your fitness journey</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-pizza-slice"></i>
-                <h3>Diet Plan</h3>
-                <p>Customized diet plans for weight loss and muscle gain</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-gamepad"></i>
-                <h3>Zumba & Yoga</h3>
-                <p>Fun dance workouts and relaxing yoga sessions</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-parking"></i>
-                <h3>Free Parking</h3>
-                <p>Ample parking space for all members</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <h2 class="section-title">Membership Plans</h2>
-        <div class="pricing-card">
-            <h3>Monthly Plan</h3>
-            <div class="price">₹500<span>/month</span></div>
-            <ul>
-                <li>Unlimited Gym Access</li>
-                <li>All Equipment Use</li>
-                <li>Locker Facility</li>
-                <li>Free Parking</li>
-                <li>Group Classes Included</li>
-                <li>Diet Consultation</li>
-            </ul>
-            <a href="https://wa.me/919203173272" class="cta-button">Join Now via WhatsApp</a>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="gallery" id="gallery">
-        <h2 class="section-title">Gym Photos</h2>
-        <div class="gallery-grid">
-            <div class="gallery-img">
-                <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500" alt="Gym Equipment">
-            </div>
-            <div class="gallery-img">
-                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500" alt="Weight Training">
-            </div>
-            <div class="gallery-img">
-                <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f3bb?w=500" alt="Cardio Area">
-            </div>
-            <div class="gallery-img">
-                <img src="https://images.unsplash.com/photo-1574680096145-d05b289e47a2?w=500" alt="Workout">
-            </div>
-            <div class="gallery-img">
-                <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=500" alt="Training">
-            </div>
-            <div class="gallery-img">
-                <img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=500" alt="Gym Interior">
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <h2 class="section-title">Contact Us</h2>
-        <div class="contact-info">
-            <p><i class="fas fa-phone"></i> Call: +91 9203173272</p>
-            <p><i class="fab fa-whatsapp"></i> WhatsApp: +91 9203173272</p>
-            <p><i class="fas fa-map-marker-alt"></i> Address: Your City,  all india</p>
-            <p><i class="fas fa-clock"></i> Timing: 5:00 AM - 11:00 PM</p>
-        </div>
-    </section>
-
-    <!-- Floating Buttons -->
-    <div class="floating-buttons">
-        <a href="https://wa.me/919203173272" class="whatsapp-btn" target="_blank">
-            <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-        <a href="tel:919203173272" class="call-btn">
-            <i class="fas fa-phone"></i> Call Now
-        </a>
+    <!-- 📌 FIXED NAVBAR -->
+    <div class="navbar">
+        <button onclick="showPage('home')">Home</button>
+        <button onclick="showPage('menu')">Menu</button>
+        <button onclick="showPage('checkout')">Cart 🛒</button>
+        <button onclick="showPage('contact')">Contact</button>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2024 Motivational Gym. All Rights Reserved.</p>
-    </footer>
+    <!-- ================= 📄 PAGE 1: HOME (EXPANDED & LONG) ================= -->
+    <div id="home" class="page active-page">
+        <!-- Section 1: Top Hero Banner -->
+        <div class="hero">
+            <h1>Indori Chaska 😋</h1>
+            <p>Delicious & Fresh Food Delivered Straight to Your Doorstep!</p>
+            <button class="btn-main" style="width: auto; padding: 10px 30px;" onclick="showPage('menu')">🍔 Order Now</button>
+        </div>
 
+        <!-- Section 2: Active Offer Coupon -->
+        <div class="coupon">
+            <h3>🎉 Special Discount Offer!</h3>
+            <p>Use Coupon Code <strong>INDORI10</strong> & Get 10% Flat Discount!</p>
+        </div>
+
+        <!-- 🆕 Section 3: Horizontal Slider Items -->
+        <div class="section-padding">
+            <h2>Chef's Special Choices ⭐</h2>
+            <span class="sub-text">Top rated delicious street foods from Indore</span>
+            <div class="featured-container">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&w=300&q=80" alt="Poha">
+                    <h4>Indori Poha</h4>
+                    <span>₹30 Only</span>
+                </div>
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=300&q=80" alt="Samosa">
+                    <h4>Crispy Samosa</h4>
+                    <span>₹20 Only</span>
+                </div>
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&w=300&q=80" alt="Jalebi">
+                    <h4>Desi Jalebi</h4>
+                    <span>₹40 Only</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🆕 Section 4: Highlights Feature Grid -->
+        <div class="section-padding" style="background: #fff;">
+            <h2>Why Order From Us? 🛵</h2>
+            <span class="sub-text">Premium food standards curated just for you</span>
+            <div class="features-grid">
+                <div class="feature-box">
+                    <span>⚡</span>
+                    <h4>Fast Delivery</h4>
+                </div>
+                <div class="feature-box">
+                    <span>🧼</span>
+                    <h4>100% Hygienic</h4>
+                </div>
+                <div class="feature-box">
+                    <span>🔥</span>
+                    <h4>Piping Hot</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🆕 Section 5: Middle Brand Promotion Banner -->
+        <div class="mid-banner">
+            <h2 style="color: white; font-size: 22px;">Made With Fresh Ingredients Daily</h2>
+            <p style="margin: 0; font-size: 14px;">Experience the authentic premium taste right at your comfort zone.</p>
+        </div>
+
+        <!-- Section 6: Customer Testimonials -->
+        <div class="section-padding">
+            <h2>What Customers Say 🥰</h2>
+            <span class="sub-text">Real feedback from our happy food lovers</span>
+            <div class="card" style="margin: 0 20px 15px 20px;">
+                <p style="font-style: italic; color:#555; margin-top:0;">"The Poha and Jalebi here are the best in Indore!"</p>
+                <strong>- Aman Sharma ⭐⭐⭐⭐⭐</strong>
+            </div>
+            <div class="card" style="margin: 0 20px;">
+                <p style="font-style: italic; color:#555; margin-top:0;">"Super clean packaging and exceptionally fast delivery."</p>
+                <strong>- Rahul Verma ⭐⭐⭐⭐⭐</strong>
+            </div>
+        </div>
+
+        <!-- 🆕 Section 7: FAQ Items Accordion Look -->
+        <div class="section-padding" style="background: #fff;">
+            <h2>Frequently Asked Questions 🤔</h2>
+            <span class="sub-text">Quick answers to your basic questions</span>
+            <div class="faq-box">
+                <div class="faq-item">
+                    <strong>Q: Is delivery free?</strong>
+                    <p>A: Yes! Free delivery applies on orders above ₹150.</p>
+                </div>
+                <div class="faq-item">
+                    <strong>Q: Do you take bulk event orders?</strong>
+                    <p>A: Yes, absolutely. Contact us via phone call for special catering prices.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🆕 Section 8: Professional Restaurant Footer -->
+        <footer>
+            <h3>Indori Chaska Restaurant</h3>
+            <p style="margin: 5px 0;">Serving Happiness & Authentic Street Food Taste.</p>
+            <p style="font-size: 11px; margin-top:15px; color:#747d8c;">© 2026 Indori Chaska. Coded by Arpit Web Dev.</p>
+        </footer>
+    </div>
+
+    <!-- ================= 📄 PAGE 2: MENU ================= -->
+    <div id="menu" class="page" style="padding: 20px;">
+        <h2>Our Digital Menu 📋</h2>
+        <input type="text" id="search" class="search-box" placeholder="Search food items..." onkeyup="searchFood()">
+        <button class="filter-btn" id="vegFilterBtn" onclick="toggleVegFilter()">🟢 Show Pure Veg Only</button>
+
+        <div id="menu-container">
+            <div class="menu-item" data-veg="true">
+                <div><strong>Special Indori Poha 🟢</strong><br><span style="color:#666;">₹30</span></div>
+                <button class="btn-add" onclick="addToCart('Special Indori Poha', 30)">+ Add</button>
+            </div>
+            <div class="menu-item" data-veg="true">
+                <div><strong>Premium Jalebi (100g) 🟢</strong><br><span style="color:#666;">₹40</span></div>
+                <button class="btn-add" onclick="addToCart('Premium Jalebi (100g)', 40)">+ Add</button>
+            </div>
+            <div class="menu-item" data-veg="false">
+                <div><strong>Chicken Samosa 🔴</strong><br><span style="color:#666;">₹60</span></div>
+                <button class="btn-add" onclick="addToCart('Chicken Samosa', 60)">+ Add</button>
+            </div>
+        </div>
+
+        <div style="height: 100px;"></div>
+        <!-- BOTTOM STICKY CART BAR -->
+        <div class="cart-box">
+            <div style="margin-bottom: 8px;"><strong>Items:</strong> <span id="cart-count">0</span> | <strong>Total:</strong> ₹<span id="cart-total">0</span></div>
+            <button class="btn-main" style="background:#25D366;" onclick="showPage('checkout')">🛒 Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- ================= 📄 PAGE 3: CHECKOUT ================= -->
+    <div id="checkout" class="page" style="padding: 20px 0;">
+        <h2>📍 Order & Delivery Details</h2>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 0 20px;">
+        <div class="form-group">
+            <label>Your Name:</label>
+            <input type="text" id="custName" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+            <label>Coupon Code (Optional):</label>
+            <input type="text" id="coupon" placeholder="e.g., INDORI10" onkeyup="applyCoupon()">
+        </div>
+        <div class="form-group">
+            <label>Delivery Address:</label>
+            <input type="text" id="custAddress" placeholder="Type address or use GPS button">
+            <button class="btn-location" onclick="getLocation()">📍 Auto-Fill My Live Location</button>
+        </div>
+        <h3>Final Bill Amount: ₹<span id="final-total">0</span></h3>
+        <button class="btn-whatsapp" onclick="sendOrder()">🚀 Send Final Order via WhatsApp</button>
+    </div>
+
+    <!-- ================= 📄 PAGE 4: CONTACT ================= -->
+    <div id="contact" class="page" style="padding: 20px 0;">
+        <div class="card">
+            <h2>🕒 Opening Hours</h2>
+            <p style="color:#555; margin: 0;">07:00 AM to 11:00 PM (Everyday Open)</p>
+        </div>
+        <div class="card">
+            <h2>📞 Call Restaurant Directly</h2>
+            <p style="color:#555; margin-bottom: 15px;">Click below to make a direct phone call for quick tracking:</p>
+            <a href="tel:9203173272" class="btn-call">📞 Call Now</a>
+        </div>
+    </div>
+
+    <!-- ================= 🧠 JAVASCRIPT LOGIC ================= -->
     <script>
-        // Theme Change Function
-        function changeTheme(themeName) {
-            document.body.className = themeName;
+        let cart = [];
+        let isVegFilterActive = false;
+
+        // पेज स्विचिंग फंक्शन
+        function showPage(pageId) {
+            let pages = document.getElementsByClassName('page');
+            for (let i = 0; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+            document.getElementById(pageId).style.display = 'block';
+            window.scrollTo(0, 0); // पेज बदलते ही टॉप पर स्क्रॉल करें
+            
+            if(pageId === 'checkout') { updateCheckoutUI(); }
         }
 
-        // Mobile Menu Toggle
-        function toggleMenu() {
-            const navMenu = document.getElementById('navMenu');
-            navMenu.classList.toggle('active');
+        // कार्ट में जोड़ने के लिए
+        function addToCart(name, price) {
+            cart.push({name: name, price: price});
+            document.getElementById('cart-count').innerText = cart.length;
+            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-total').innerText = total;
+            alert(name + " added to cart!");
         }
 
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+        // लाइव फूड सर्च
+        function searchFood() {
+            let input = document.getElementById('search').value.toLowerCase();
+            let items = document.getElementsByClassName('menu-item');
+            for (let i = 0; i < items.length; i++) {
+                let text = items[i].innerText.toLowerCase();
+                items[i].style.display = text.includes(input) ? "flex" : "none";
+            }
+        }
+
+        // वेज / नॉन-वेज फ़िल्टर
+        function toggleVegFilter() {
+            isVegFilterActive = !isVegFilterActive;
+            let items = document.getElementsByClassName('menu-item');
+            let btn = document.getElementById('vegFilterBtn');
+            
+            if(isVegFilterActive) {
+                btn.innerText = "🔄 Show All Items";
+                btn.style.background = "#ffc107";
+                for (let i = 0; i < items.length; i++) {
+                    if(items[i].getAttribute('data-veg') !== 'true') { items[i].style.display = "none"; }
+                }
+            } else {
+                btn.innerText = "🟢 Show Pure Veg Only";
+                btn.style.background = "#28a745";
+                for (let i = 0; i < items.length; i++) { items[i].style.display = "flex"; }
+                searchFood();
+            }
+        }
+
+        // चेकआउट स्क्रीन सिंक
+        function updateCheckoutUI() {
+            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('final-total').innerText = total;
+        }
+
+        // कूपन डिस्काउंट लॉजिक
+        function applyCoupon() {
+            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            let code = document.getElementById('coupon').value;
+            if(code === "INDORI10") {
+                let discounted = total - (total * 0.10);
+                document.getElementById('final-total').innerText = discounted + " (10% Off Applied!)";
+            } else {
+                document.getElementById('final-total').innerText = total;
+            }
+        }
+
+        // 📍 जीपीएस लोकेशन फैचर
+        function getLocation() {
+            document.getElementById("custAddress").value = "Fetching GPS location...";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    window.mapLink = "https://www.google.com/maps?q=" + pos.coords.latitude + "," + pos.coords.longitude;
+                    document.getElementById("custAddress").value = "📍 Live GPS Location Locked!";
+                    alert("Location loaded successfully!");
+                }, () => {
+                    alert("Please turn on your Mobile GPS!");
+                    document.getElementById("custAddress").value = "";
                 });
-            });
-        });
+            }
+        }
+
+        // 🚀 100% टेस्टेड और वर्किंग व्हाट्सएप सबमिशन फंक्शन
+        function sendOrder() {
+            let name = document.getElementById('custName').value;
+            let addr = document.getElementById('custAddress').value;
+            let map = window.mapLink || "Manual Address";
+            let finalAmt = document.getElementById('final-total').innerText;
+
+            if(cart.length === 0) { alert("Cart is empty!"); return; }
+            if(!name || !addr) { alert("Please fill Name and Address!"); return; }
+
+            // 📞 आपका एक्टिव नंबर
+            let myWhatsAppNumber = "919203173272"; 
+
+            let itemsText = cart.map(i => i.name).join(", ");
+            
+            let messageText = "*🔥 NEW ORDER RECEIVED 🔥*\n\n" +
+                              "*Name:* " + name + "\n" +
+                              "*Items:* " + itemsText + "\n" +
+                              "*Total:* ₹" + finalAmt + "\n" +
+                              "*Address:* " + addr + "\n" +
+                              "*Maps:* " + map;
+
+            let encodedMsg = encodeURIComponent(messageText);
+
+            // आपके स्क्रीनशॉट में टेस्ट की गई वर्किंग रीडायरेक्ट स्कीम
+            window.location.href = "https://api.whatsapp.com/send?phone=" + myWhatsAppNumber + "&text=" + encodedMsg;
+        }
     </script>
 </body>
 </html>
