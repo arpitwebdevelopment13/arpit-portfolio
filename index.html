@@ -23,24 +23,11 @@ header {
   padding: 15px;
 }
 
-input {
-  width: 100%;
-  padding: 15px;
-  font-size: 18px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
 .menu-item {
   background: white;
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 10px;
-}
-
-.menu-item h3 {
-  margin: 0;
 }
 
 button {
@@ -69,7 +56,7 @@ button {
 
 <div class="container">
 
-<input type="text" id="table" placeholder="Enter Table Number">
+<h3 id="tableText"></h3>
 
 <div class="menu-item">
   <h3>🍕 Pizza - ₹199</h3>
@@ -95,9 +82,16 @@ button {
 </div>
 
 <script>
-  let params = new URLSearchParams(window.location.search);
-let table = params.get("table");
 let items = [];
+
+// 👇 Auto Table Detect
+let params = new URLSearchParams(window.location.search);
+let table = params.get("table");
+
+// Show table on screen
+if(table){
+  document.getElementById("tableText").innerText = "Table: " + table;
+}
 
 function addItem(item) {
   items.push(item);
@@ -115,17 +109,17 @@ function showItems() {
 }
 
 function sendOrder() {
-  let table = document.getElementById("table").value;
-  let number = "919203173272"; // YOUR NUMBER
+  let number = "919203173272";
 
   if(items.length === 0){
     alert("Please add items");
     return;
   }
 
-  let msg = "🛒 New Order:%0A";
+  let msg = "🛒 Order:%0A";
   items.forEach(i => msg += "- " + i + "%0A");
-  msg += "%0ATable: " + table;
+
+  msg += "%0ATable: " + (table ? table : "Not Set");
 
   let url = "https://wa.me/" + number + "?text=" + msg;
   window.open(url, '_blank');
