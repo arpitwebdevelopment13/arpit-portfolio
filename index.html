@@ -95,6 +95,8 @@ button {
 </div>
 
 <script>
+  let params = new URLSearchParams(window.location.search);
+let table = params.get("table");
 let items = [];
 
 function addItem(item) {
