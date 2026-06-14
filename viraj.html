@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Viraj Hotel QR Menu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#ff512f,#dd2476);
+  color:white;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+  background:black;
+}
+
+.category{
+  padding:15px;
+}
+
+.card{
+  background:white;
+  color:black;
+  padding:15px;
+  margin:12px 0;
+  border-radius:12px;
+  font-size:18px;
+}
+
+.controls{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+}
+
+button{
+  flex:1;
+  padding:12px;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+}
+
+.add{background:green;color:white}
+.remove{background:red;color:white}
+
+.cart{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#000;
+  padding:15px;
+}
+
+select{
+  padding:8px;
+  margin-top:10px;
+  font-size:16px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+🍽️ Viraj Hotel  
+<div id="table"></div>
+
+<select id="people">
+<option>1 Person</option>
+<option>2 People</option>
+<option>3 People</option>
+<option>4 People</option>
+<option>5 People</option>
+<option>6 People</option>
+<option>7 People</option>
+<option>8 People</option>
+<option>9 People</option>
+<option>10 People</option>
+</select>
+
+</header>
+
+<div id="menu"></div>
+
+<div class="cart">
+<h3 id="total">Total: ₹0</h3>
+<button onclick="orderNow()">Order on WhatsApp</button>
+</div>
+
+<script>
+
+// TABLE
+const params = new URLSearchParams(window.location.search);
+const table = params.get("table") || "1";
+document.getElementById("table").innerText = "Table No: " + table;
+
+// CART
+let cart = {};
+let total = 0;
+
+// 🔥 FULL PDF MENU (AUTO FIXED)
+const rawMenu = `
+Tea - 39
+Hot Coffee - 49
+Soft Drinks - 50
+Fresh Lime Soda - 69
+Kiwi Cooler - 139
+Blue Lagoon - 149
+Virgin Mojito - 149
+Cold Coffee - 129
+Cold Coffee With Ice Cream - 149
+Lemon Ice Tea - 139
+Orange Blossom - 139
+
+Hot And Sour Soup - 139
+Veg Clear Soup - 135
+Lemon Coriander - 135
+Manchow Soup - 135
+Cream Of Tomato - 169
+Cream Of Mushroom - 169
+Cream Of Broccoli - 169
+
+Roasted Papad - 25
+Masala Papad - 30
+Butter Milk - 60
+Lassi - 100
+Peanut Chaat - 99
+French Fries - 120
+Peanut Garlic Fry - 120
+Chana Roast - 149
+Dahi Papdi Chaat - 149
+Peri Peri Fries - 149
+
+Indore Masala Sandwich - 89
+Corn Sandwich - 89
+Veg Sandwich - 89
+Veg Cheese Sandwich - 99
+Cheese Chutney Sandwich - 99
+Paneer Tikka Sandwich - 149
+
+White Sauce Pasta - 249
+Red Sauce Pasta - 249
+Pink Sauce Pasta - 249
+Lasagna - 349
+Cheese Nachos - 199
+Bean Nachos - 199
+Nachos With Salsa - 199
+
+Margherita Pizza - 219
+Cheese Burst Pizza - 249
+Vegetable Pizza - 199
+BBQ Paneer Pizza - 249
+Half And Half Pizza - 249
+Guest Choice Pizza - 279
+
+Saute Vegetable - 199
+Crispy Corn - 179
+Veg Manchurian - 199
+Honey Chilli Potato - 199
+Veg Kothe - 199
+Chilli Baby Corn - 210
+Schezwan Cheese Potato - 249
+Spring Roll - 249
+Cheese Corn Balls - 279
+Cheese Nuggets - 279
+Chilli Paneer - 249
+Paneer 65 - 249
+
+Paneer Tikka - 269
+Paneer Kasturi Tikka - 269
+Paneer Hariyali Tikka - 269
+Paneer Pudina Tikka - 269
+Paneer Angara - 269
+Paneer Achari - 269
+Mushroom Tikka - 269
+Veg Seekh Kebab - 249
+Hara Bhara Kebab - 249
+
+Onion Salad - 39
+Green Salad - 59
+Punjabi Cuts - 59
+Russian Salad - 99
+Plain Curd - 60
+Boondi Raita - 99
+Mix Veg Raita - 99
+Cucumber Raita - 99
+
+Paneer Passanda - 359
+Paneer Do Pyaza - 249
+Paneer Lababdar - 249
+Butter Paneer Masala - 299
+Paneer Tikka Masala - 199
+Kadhai Paneer - 199
+Paneer Kolhapuri - 199
+Shahi Paneer - 299
+
+Sev Tamatar - 149
+Veg Kolhapuri - 199
+Bhindi Masala - 189
+Aloo Gobhi - 199
+Matar Mushroom - 249
+
+Dal Fry - 169
+Dal Tadka - 199
+Dal Makhani - 249
+
+Steam Rice - 169
+Jeera Rice - 169
+Tawa Pulao - 199
+
+Butter Roti - 20
+Tandoori Roti - 30
+Butter Naan - 59
+Garlic Naan - 79
+Cheese Naan - 109
+
+Vanilla Ice Cream - 89
+Chocolate Ice Cream - 89
+Strawberry Ice Cream - 89
+Gulab Jamun - 79
+Brownie With Ice Cream - 149
+`;
+
+// AUTO MENU
+let data = {"Menu":[]};
+
+rawMenu.split("\n").forEach(line=>{
+  if(line.trim() !== ""){
+    let parts = line.split("-");
+    let name = parts[0].trim();
+    let price = parseInt(parts[1]);
+    data["Menu"].push([name,price]);
+  }
+});
+
+// SHOW MENU
+const menuDiv = document.getElementById("menu");
+
+data["Menu"].forEach(item=>{
+  menuDiv.innerHTML += `
+  <div class="card">
+    <div><b>${item[0]}</b> - ₹${item[1]}</div>
+    <div class="controls">
+      <button class="add" onclick="add('${item[0]}',${item[1]})">ADD</button>
+      <button class="remove" onclick="removeItem('${item[0]}',${item[1]})">REMOVE</button>
+    </div>
+  </div>`;
+});
+
+// ADD
+function add(name,price){
+  if(cart[name]){
+    cart[name].qty++;
+  }else{
+    cart[name]={price:price,qty:1};
+  }
+  total += price;
+  update();
+}
+
+// REMOVE
+function removeItem(name,price){
+  if(cart[name]){
+    cart[name].qty--;
+    total -= price;
+    if(cart[name].qty<=0){
+      delete cart[name];
+    }
+  }
+  update();
+}
+
+// UPDATE
+function update(){
+  document.getElementById("total").innerText = "Total: ₹" + total;
+}
+
+// ORDER
+function orderNow(){
+
+  if(Object.keys(cart).length===0){
+    alert("Add items first");
+    return;
+  }
+
+  let people = document.getElementById("people").value;
+
+  let msg = "Order Table " + table + "%0A";
+  msg += "People: " + people + "%0A";
+
+  for(let item in cart){
+    msg += item + " x " + cart[item].qty + "%0A";
+  }
+
+  msg += "Total: ₹" + total;
+
+  window.open("https://wa.me/91XXXXXXXXXX?text=" + msg);
+}
+
+</script>
+
+</body>
+</html>
